@@ -89,12 +89,21 @@ def discover(home,policy):
                 except ValueError:notice(f'Skipped command root outside package: {commands}');continue
                 files=[commands] if commands.is_file() and commands.suffix=='.md' else (commands.rglob('*.md') if commands.is_dir() else [])
                 for p in files:add(host,gid,str(p.relative_to(root)),p,version,command=True)
+    def installed_codex_plugin(root,name):
+        """Discover Marketplace plugins installed directly by codex-marketplace."""
+        gid=group('codex','installed-plugin:'+name,name,'Installed plugin')
+        for p in skill_files(root/'skills'):
+            add('codex',gid,str(p.relative_to(root)),p)
+        return gid
     for host in HOSTS:
         base=home/('.'+host)
         add_root(host,base/'skills','personal','Personal skills','User directory')
         if host=='codex':
             add_root(host,base/'skills/.system','system','Built-in system skills','Codex system directory',True)
             add_root(host,home/'.agents/skills','shared','Shared agent skills','User directory')
+            installed=base/'plugins'
+            for plugin in sorted(installed.iterdir()) if installed.exists() else []:
+                if plugin.is_dir() and plugin.name!='cache':installed_codex_plugin(plugin,plugin.name)
         if host=='claude':
             gid=group(host,'commands','Personal commands','Legacy slash commands')
             for p in (base/'commands').rglob('*.md') if (base/'commands').exists() else []:
