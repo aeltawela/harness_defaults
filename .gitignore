@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+
+# Test and local browser artifacts
+screenshots/
+playwright-report/
+test-results/
+
+# Private manager state and local receipts
+state/
+*.json
+!pyproject.json
+
+# OS/editor files
+.DS_Store
+.idea/
+.vscode/

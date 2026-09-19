@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "harness-defaults"
+version = "0.1.0"
+description = "Explicit-by-default local skill policy manager for coding agent harnesses"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "aeltawela" }]
+dependencies = ["ruamel.yaml==0.18.17"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Operating System :: MacOS",
+  "Programming Language :: Python :: 3",
+]
+
+[project.scripts]
+harness_defaults = "harness_defaults.__main__:main"
+
+[tool.setuptools]
+packages = ["harness_defaults"]
+
+[tool.setuptools.package-data]
+harness_defaults = ["ui.html"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
