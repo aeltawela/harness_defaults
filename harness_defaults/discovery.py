@@ -103,7 +103,7 @@ def discover(home,policy):
             add_root(host,home/'.agents/skills','shared','Shared agent skills','User directory')
             installed=base/'plugins'
             for plugin in sorted(installed.iterdir()) if installed.exists() else []:
-                if plugin.is_dir() and plugin.name!='cache':installed_codex_plugin(plugin,plugin.name)
+                if plugin.is_dir() and plugin.name!='cache' and not plugin.name.startswith('.'):installed_codex_plugin(plugin,plugin.name)
         if host=='claude':
             gid=group(host,'commands','Personal commands','Legacy slash commands')
             for p in (base/'commands').rglob('*.md') if (base/'commands').exists() else []:
