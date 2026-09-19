@@ -38,10 +38,10 @@ harness_defaults ui
 
 | Checkbox | Meaning |
 | --- | --- |
-| Checked | The skill requires an explicit invocation. |
-| Unchecked | The host may invoke it automatically. |
+| Checked | The host may invoke the skill automatically. |
+| Unchecked | The skill requires an explicit invocation. |
 
-New skills are checked by default. Group controls apply a default to a plugin or extension; individual choices override a group default. The initial core preset keeps the existing Codex system skills implicit, and you can change it in the UI.
+New skills are unchecked by default. Group controls apply a default to a plugin or extension; individual choices override a group default. The initial core preset keeps the existing Codex system skills implicit, and you can change it in the UI.
 
 ## Terminal commands
 
