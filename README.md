@@ -6,6 +6,10 @@
 
 It runs entirely on your Mac. There is no cloud service, analytics, or account connection.
 
+![harness_defaults UI showing an installed GitHub plugin and its skills](assets/native-plugin-ui.png)
+
+*A privacy-safe example: locally installed plugin skills, with no personal skills or real inventory data shown.*
+
 ## Install
 
 `uv` manages the isolated Python environment automatically. Install it first if needed: <https://docs.astral.sh/uv/getting-started/installation/>.
