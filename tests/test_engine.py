@@ -111,6 +111,16 @@ def test_versions_share_identity_and_ignore_compatibility_subtree(mgr):
     mgr.update(0,skills={rows[0]['id']:False});assert mgr.reconcile()['changed']==2
 
 
+def test_directly_installed_codex_marketplace_plugin_is_explicit_by_default(mgr):
+    root=mgr.home/'.codex/plugins/marketplace-plugin/skills/review'
+    root.mkdir(parents=True)
+    skill_file=root/'SKILL.md';skill_file.write_text('---\nname: review\n---\nBody\n')
+    snapshot=mgr.snapshot();row=next(r for r in snapshot['skills'] if r['name']=='review')
+    assert row['group'].endswith('marketplace-plugin') and row['explicit'] is True
+    assert mgr.reconcile()['changed']==1
+    assert 'allow_implicit_invocation: false' in (root/'agents/openai.yaml').read_text()
+
+
 def test_policy_validation_rejects_non_boolean(mgr):
     skill(mgr.home);s=mgr.snapshot()
     with pytest.raises(ValueError):mgr.update(0,skills={s['skills'][0]['id']:'false'})
