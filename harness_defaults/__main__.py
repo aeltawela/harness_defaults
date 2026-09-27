@@ -42,7 +42,7 @@ def main():
             if type(server.get('port')) is not int or not isinstance(server.get('token'),str):raise ValueError('Service is not running. Run harness_defaults serve --open or reinstall its LaunchAgent.')
             url=f"http://127.0.0.1:{server['port']}/"
             request=urllib.request.Request(url+'api/state',headers={'Authorization':'Bearer '+server['token']})
-            urllib.request.urlopen(request,timeout=5).close()
+            urllib.request.urlopen(request,timeout=30).close()
             webbrowser.open(url+'#token='+server['token']);print('Opened harness_defaults.');return
         elif args.command=='export':result=manager.initialize()
         elif args.command in ['status','scan']:result=manager.snapshot() if args.command=='status' else manager.reconcile(dry_run=True)
