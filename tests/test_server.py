@@ -47,6 +47,6 @@ def test_root_has_security_headers_and_unknown_routes_404(service):
     server,m=service
     response=request(server,'/')
     assert response.headers['Content-Security-Policy'] and response.headers['Cache-Control']=='no-store'
-    assert b'harness_defaults' in response.read()
+    assert b'harness-config' in response.read()
     with pytest.raises(urllib.error.HTTPError) as e:request(server,'/../../etc/passwd')
     assert e.value.code==404

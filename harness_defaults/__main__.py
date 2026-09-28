@@ -4,10 +4,7 @@ import os
 from pathlib import Path
 import sys
 import time
-import urllib.request
-import webbrowser
 from .engine import Manager
-from .storage import json_read
 
 
 def default_state():return Path.home()/'Library/Application Support/harness_defaults/state'
@@ -38,12 +35,8 @@ def main():
                 if result['changed'] or result['errors']:print(json.dumps(result),flush=True)
                 time.sleep(args.interval)
         elif args.command=='ui':
-            server=json_read(manager.state/'server.json',{})
-            if type(server.get('port')) is not int or not isinstance(server.get('token'),str):raise ValueError('Service is not running. Run harness_defaults serve --open or reinstall its LaunchAgent.')
-            url=f"http://127.0.0.1:{server['port']}/"
-            request=urllib.request.Request(url+'api/state',headers={'Authorization':'Bearer '+server['token']})
-            urllib.request.urlopen(request,timeout=30).close()
-            webbrowser.open(url+'#token='+server['token']);print('Opened harness_defaults.');return
+            # One browser dashboard owns both model and harness configuration.
+            os.execvp('model-bridge',['model-bridge','web','--view','harness']);return
         elif args.command=='export':result=manager.initialize()
         elif args.command in ['status','scan']:result=manager.snapshot() if args.command=='status' else manager.reconcile(dry_run=True)
         elif args.command=='apply':result=manager.reconcile()
@@ -64,7 +57,7 @@ def main():
             print(f"{len(result['skills'])} skills · {sum(not r['explicit'] for r in result['skills'])} implicit allowed · {'paused' if result['policy']['paused'] else 'maintenance enabled'}")
             print(f"{result['pending_files']} pending files · {len(result['errors'])} errors")
             for error in result['errors']:print(error)
-            print('Open the checkbox list: harness_defaults ui')
+            print('Open the checkbox list: harness-config ui')
         else:print(json.dumps(result,indent=2))
         if result.get('errors') or result.get('conflicts'):return 1
     except (ValueError,OSError) as e:

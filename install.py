@@ -29,7 +29,7 @@ def main():
     venv=base/'venv'
     if not (venv/'bin/python').exists():subprocess.run([uv,'venv','--python','3.13',str(venv)],check=True)
     subprocess.run([uv,'pip','install','--python',str(venv/'bin/python'),'-r',str(app/'requirements.txt')],check=True)
-    launcher=home/'.local/bin/harness_defaults';launcher.parent.mkdir(parents=True,exist_ok=True)
+    launcher=home/'.local/bin/harness-config';launcher.parent.mkdir(parents=True,exist_ok=True)
     launcher.write_text('#!/bin/sh\nexec env '+shlex.quote('PYTHONPATH='+str(app))+' '+shlex.quote(str(venv/'bin/python'))+' -m harness_defaults "$@"\n');launcher.chmod(0o755)
     # Migrate earlier names without losing policy or original-byte backups.
     legacy_bases=[
@@ -68,7 +68,10 @@ def main():
         if legacy_launcher.exists():
             legacy_launcher.write_text('#!/bin/sh\nexec '+shlex.quote(str(launcher))+' "$@"\n')
             legacy_launcher.chmod(0o755)
+    old_launcher=home/'.local/bin/harness_defaults'
+    if old_launcher.is_file() and not old_launcher.is_symlink():
+        old_launcher.unlink()
     print('Installed '+str(launcher))
-    print('Open the checkbox list: harness_defaults ui')
+    print('Open the checkbox list: harness-config ui')
 
 if __name__=='__main__':main()

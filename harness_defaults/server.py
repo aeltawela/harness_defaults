@@ -27,7 +27,7 @@ def create_server(manager,port,token):
             if self.headers.get('Host')!=authority or self.headers.get('Origin') not in (None,'http://'+authority):
                 self.respond(403,{'error':'Only the local manager page can make this request.'});return False
             if auth and not hmac.compare_digest(self.headers.get('Authorization',''),'Bearer '+token):
-                self.respond(403,{'error':'Open the manager using harness_defaults ui to authenticate.'});return False
+                self.respond(403,{'error':'Open the shared dashboard using harness-config ui to authenticate.'});return False
             return True
         def do_GET(self):
             if not self.guard(auth=self.path!='/'):return

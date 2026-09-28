@@ -1,14 +1,12 @@
-# harness_defaults
+# harness-config
 
 **Make automatic agent behavior an intentional default.**
 
-`harness_defaults` gives local Codex, Qwen Code, and Claude Code skills one simple rule: new skills are explicit-only until you choose otherwise. Its local checkbox UI lets you keep a small trusted core implicit and control every other discovered skill, including skills brought in by plugin and extension updates.
+`harness-config` gives local Codex, Qwen Code, and Claude Code skills one simple rule: new skills are explicit-only until you choose otherwise. Its skill choices now appear on the **Harness** page of the shared Model Bridge browser dashboard. The policy engine remains the internal `harness_defaults` Python package.
 
 It runs entirely on your Mac. There is no cloud service, analytics, or account connection.
 
-![harness_defaults UI showing an installed GitHub plugin and its skills](assets/native-plugin-ui.png)
-
-*A privacy-safe example: locally installed plugin skills, with no personal skills or real inventory data shown.*
+The old standalone screen is retired as a public entry point; `harness-config ui` opens one browser dashboard for both model routes and skill policy.
 
 ## Install
 
@@ -20,7 +18,7 @@ cd harness_defaults
 python3 install.py
 ```
 
-The installer makes `harness_defaults` available in your normal terminals at `~/.local/bin/harness_defaults` and starts a user-level macOS service that checks for new or updated skills every 15 seconds.
+The installer makes `harness-config` available in your normal terminals at `~/.local/bin/harness-config` and starts a user-level macOS service that checks for new or updated skills every 15 seconds. Install [Model Bridge](https://github.com/aeltawela/model-bridge) as well for the shared browser dashboard.
 
 If `~/.local/bin` is not already on your `PATH`, add this once to `~/.zshrc`:
 
@@ -31,7 +29,7 @@ export PATH="$HOME/.local/bin:$PATH"
 Then open the controls from any terminal:
 
 ```sh
-harness_defaults ui
+harness-config ui
 ```
 
 ## The one rule
@@ -46,18 +44,18 @@ New skills are unchecked by default. Group controls apply a default to a plugin 
 ## Terminal commands
 
 ```sh
-harness_defaults ui                 # open the checkbox UI
-harness_defaults status             # see coverage and problems
-harness_defaults scan               # dry run; no files changed
-harness_defaults apply              # reconcile now
-harness_defaults pause              # stop background changes
-harness_defaults resume             # resume background changes
-harness_defaults export             # print your policy JSON
-harness_defaults add-project /path/to/project
-harness_defaults restore            # restore manager-owned metadata changes
+harness-config ui                 # open the shared dashboard on Harness
+harness-config status             # see coverage and problems
+harness-config scan               # dry run; no files changed
+harness-config apply              # reconcile now
+harness-config pause              # stop background changes
+harness-config resume             # resume background changes
+harness-config export             # print your policy JSON
+harness-config add-project /path/to/project
+harness-config restore            # restore manager-owned metadata changes
 ```
 
-`harness_defaults launch -- qwen` synchronizes choices immediately before launching an agent CLI.
+`harness-config launch -- qwen` synchronizes choices immediately before launching an agent CLI.
 
 ## What it changes
 
