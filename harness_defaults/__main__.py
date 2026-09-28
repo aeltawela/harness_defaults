@@ -10,11 +10,29 @@ from .engine import Manager
 def default_state():return Path.home()/'Library/Application Support/harness_defaults/state'
 
 
+MODEL_COMMANDS={'help','web','tui','init','models','config','native-roles','doctor',
+                'remote-ownership','update','install','upgrade','stage-cli',
+                'install-cli-candidate','promote-cli','remote-daemon','rollback','cleanup'}
+
+
+def open_manager(arguments):
+    entry=Path(os.environ.get('HARNESS_CONFIG_MANAGER_ENTRY',
+        Path.home()/'.local/share/harness-config/manager.mjs'))
+    if not entry.is_file():
+        raise ValueError('Model controls are not installed. Install the Harness Config model component first.')
+    os.execvp('node',['node',str(entry),*arguments])
+
+
 def main():
-    parser=argparse.ArgumentParser(description='Maintain local skill invocation choices for Codex, Qwen Code, and Claude Code.')
+    if len(sys.argv)>1 and sys.argv[1] in MODEL_COMMANDS:
+        try:open_manager(sys.argv[1:])
+        except (ValueError,OSError) as e:print(str(e),file=sys.stderr);return 1
+        return 0
+    parser=argparse.ArgumentParser(description='Manage model routes and local skill invocation choices for Codex, Qwen Code, and Claude Code.',
+        epilog='Model commands: config, models, doctor, update, install, upgrade, rollback. Run harness-config config help for endpoint and model options.')
     parser.add_argument('--state',type=Path,default=default_state(),help='Policy and backup directory')
     parser.add_argument('--home',type=Path,default=Path.home(),help='Home to discover (useful for isolated testing)')
-    sub=parser.add_subparsers(dest='command',required=True)
+    sub=parser.add_subparsers(dest='command')
     for name in ['status','scan','apply','export','restore','pause','resume']:
         p=sub.add_parser(name);p.add_argument('--json',action='store_true')
     p=sub.add_parser('watch');p.add_argument('--interval',type=int,default=15)
@@ -22,8 +40,11 @@ def main():
     sub.add_parser('ui')
     p=sub.add_parser('add-project');p.add_argument('path',type=Path)
     p=sub.add_parser('launch',help='Apply policies before launching an agent CLI');p.add_argument('argv',nargs=argparse.REMAINDER)
-    args=parser.parse_args();manager=Manager(args.state,args.home)
+    args=parser.parse_args()
     try:
+        if args.command in (None,'ui'):
+            open_manager(['web','--view','harness']);return
+        manager=Manager(args.state,args.home)
         if args.command=='serve':
             from .server import run_server
             if args.interval<3:parser.error('Minimum scan interval is 3 seconds')
@@ -34,9 +55,6 @@ def main():
                 result=manager.reconcile()
                 if result['changed'] or result['errors']:print(json.dumps(result),flush=True)
                 time.sleep(args.interval)
-        elif args.command=='ui':
-            # One browser dashboard owns both model and harness configuration.
-            os.execvp('model-bridge',['model-bridge','web','--view','harness']);return
         elif args.command=='export':result=manager.initialize()
         elif args.command in ['status','scan']:result=manager.snapshot() if args.command=='status' else manager.reconcile(dry_run=True)
         elif args.command=='apply':result=manager.reconcile()

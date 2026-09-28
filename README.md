@@ -2,11 +2,11 @@
 
 **Make automatic agent behavior an intentional default.**
 
-`harness-config` gives local Codex, Qwen Code, and Claude Code skills one simple rule: new skills are explicit-only until you choose otherwise. Its skill choices now appear on the **Harness** page of the shared Model Bridge browser dashboard. The policy engine remains the internal `harness_defaults` Python package.
+`harness-config` is the single command for model routes and local skill settings. New skills remain explicit-only until you choose otherwise. The policy engine remains the internal `harness_defaults` Python package.
 
-It runs entirely on your Mac. There is no cloud service, analytics, or account connection.
+The configuration dashboard and skill policy run on your Mac, with no analytics. Model requests go only to the account or endpoint you select; configuring a cloud provider does not make this dashboard a cloud service.
 
-The old standalone screen is retired as a public entry point; `harness-config ui` opens one browser dashboard for both model routes and skill policy.
+`harness-config` or `harness-config ui` opens one browser dashboard for both model routes and skill policy.
 
 ## Install
 
@@ -18,7 +18,7 @@ cd harness_defaults
 python3 install.py
 ```
 
-The installer makes `harness-config` available in your normal terminals at `~/.local/bin/harness-config` and starts a user-level macOS service that checks for new or updated skills every 15 seconds. Install [Model Bridge](https://github.com/aeltawela/model-bridge) as well for the shared browser dashboard.
+The installer makes `harness-config` available in your normal terminals at `~/.local/bin/harness-config` and starts a user-level macOS service that checks for new or updated skills every 15 seconds. Install the [model-route component](https://github.com/aeltawela/model-bridge) as well to enable the shared dashboard and model commands. Its private manager entry is installed by that component; no second public command is needed.
 
 If `~/.local/bin` is not already on your `PATH`, add this once to `~/.zshrc`:
 
@@ -29,7 +29,7 @@ export PATH="$HOME/.local/bin:$PATH"
 Then open the controls from any terminal:
 
 ```sh
-harness-config ui
+harness-config
 ```
 
 ## The one rule
@@ -44,7 +44,9 @@ New skills are unchecked by default. Group controls apply a default to a plugin 
 ## Terminal commands
 
 ```sh
-harness-config ui                 # open the shared dashboard on Harness
+harness-config                    # open the shared dashboard on Harness
+harness-config config help        # endpoint, credential, and model commands
+harness-config models             # list configured model routes
 harness-config status             # see coverage and problems
 harness-config scan               # dry run; no files changed
 harness-config apply              # reconcile now
